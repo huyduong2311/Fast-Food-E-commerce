@@ -1,0 +1,98 @@
+﻿@{
+    ViewBag.Title = "Chi tiết đơn hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container my-5">
+    <div class="text-center mb-4">
+        <h2 class="fw-bold">Các món trong đơn hàng</h2>
+    </div>
+
+    @if (ViewBag.list != null && ViewBag.list.Count > 0)
+    {
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle text-center">
+                <thead class="table-light">
+                    <tr>
+                        <th>Hình ảnh</th>
+                        <th>Sản phẩm</th>
+                        <th>Số lượng</th>
+                        <th>Thành tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var a in ViewBag.list)
+                    {
+                        <tr>
+                            <td style="width: 100px;">
+                                <img src="~/images/@a[2]" class="img-fluid rounded shadow-sm" alt="Ảnh sản phẩm">
+                            </td>
+                            <td class="text-start">
+                                <div class="fw-semibold">
+                                    @if (a[1].Length > 40)
+                                    {
+                                        @a[1].Substring(0, 40)<text>...</text>
+                                    }
+                                    else
+                                    {
+                                        @a[1]
+                                    }
+                                </div>
+                                @if (!string.IsNullOrEmpty(a[7]?.ToString()))
+                                {
+                                    <div class="small text-muted mt-1">
+                                        Cỡ: <strong>@a[8]"</strong> – Đế: <strong>@a[10]</strong>
+                                    </div>
+                                }
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary fs-6">@a[5]</span>
+                            </td>
+                            @if (Session["UserID"] != null)
+                            {
+                                <td class="text-end text-danger fw-bold grand-total">
+                                    @Convert.ToInt32(a[12]).ToString("#,##0")đ
+                                </td>
+                            }
+                            else
+                            {
+                                <td class="text-end text-danger fw-bold grand-total">
+                                    @Convert.ToInt32(a[6]).ToString("#,##0")đ
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row justify-content-end mt-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="border rounded p-3 shadow-sm bg-light">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Tổng tiền:</h5>
+                        <h5 class="mb-0 text-success" id="totalAmountDisplay">0đ</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning text-center p-5 mt-4 shadow-sm">
+            <h4 class="mb-2">Rất tiếc! Không tìm thấy món nào trong đơn hàng này.</h4>
+            <p>Hãy quay lại cửa hàng để tiếp tục mua sắm.</p>
+        </div>
+    }
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let totalAmount = 0;
+        document.querySelectorAll(".grand-total").forEach(function (element) {
+            let price = parseInt(element.textContent.replace(/[^0-9]/g, ""), 10) || 0;
+            totalAmount += price;
+        });
+        document.getElementById("totalAmountDisplay").textContent = totalAmount.toLocaleString("vi-VN") + "đ";
+    });
+</script>

@@ -1,0 +1,44 @@
+﻿@using (Html.BeginForm("UpdateLoaiPizza", "AdminCategory", FormMethod.Post, new { id = "updateCrustForm" }))
+{
+    <div class="form-group">
+        <input type="hidden" name="id" value="@ViewBag.list[0][0]">
+        <label for="inputName">Chọn size</label>
+        <select class="form-control" name="idsize">
+            @foreach (var a in ViewBag.list2)
+            {
+                if (a[0] == ViewBag.list[0][1])
+                {
+                    <option value="@a[0]" selected>@a[1]</option>
+                }
+                else
+                {
+                    <option value="@a[0]">@a[1]</option>
+                }
+            }
+        </select>
+
+        <label for="inputName">Tên đế bánh</label>
+        <input type="text" name="name" class="form-control" placeholder="Enter size name" value="@ViewBag.list[0][2]">
+
+        <label for="inputPrice">Giá đế bánh</label>
+        <input type="number" name="price" class="form-control" placeholder="Enter size price" value="@ViewBag.list[0][3]" id="crustPrice">
+    </div>
+
+    <div class="form-group">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary" id="submitUpdateCrust">Submit</button>
+    </div>
+}
+<!--JS-->
+<script>
+    document.getElementById("submitUpdateCrust").addEventListener("click", function (event) {
+        const priceInput = document.getElementById("crustPrice");
+    const priceValue = parseFloat(priceInput.value);
+
+    if (priceValue < 0) {
+        alert("Giá không được là số âm. Vui lòng nhập lại!");
+    event.preventDefault(); // Ngăn gửi form
+        }
+    });
+</script>
+@Scripts.Render("~/jso")

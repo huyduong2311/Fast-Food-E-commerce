@@ -1,0 +1,170 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<!-- Hero Slider -->
+<section id="hero-slider" class="hero-slider position-relative">
+    <div id="carouselHero" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <!-- Slide 1 -->
+            <div class="carousel-item active">
+                <img src="~/images/slide6.jpg" class="d-block w-100" alt="Pizza Slide 1">
+                <div class="carousel-caption d-none d-md-block text-start">
+                    <h2 class="fw-bold display-5">Pizza Tươi Ngon</h2>
+                    <p>Thưởng thức hương vị chuẩn Ý với nguyên liệu tự nhiên.</p>
+                    <a href="#" class="btn btn-light fw-semibold px-4 py-2 rounded-pill">Đặt ngay</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Promotions Section -->
+@*<section class="my-4">
+        <div class="container">
+            <h2 class="section-title mb-4">Khuyến mãi, Combo</h2>
+            <div class="row promotion-cards">
+                <div class="col-md-4">
+                    <div class="promotion-card">
+                        <img src="${promo.image}" alt="${promo.name}" class="promotion-img">
+                        <div class="promotion-info">
+                            <h5 class="promotion-title">${promo.name}</h5>
+                            <p class="promotion-desc">${promo.description}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="product-price">${formatPrice(promo.price)}</div>
+                                <a href="${promo.link}" class="btn btn-add-cart">Mua ngay</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>*@
+<!-- Food Categories -->
+<section class="my-4">
+    <div class="container">
+        <h2 class="section-title mb-4">Thực đơn</h2>
+        @foreach (var b in ViewBag.list2)
+        {
+            var categoryId = b[0].ToString();
+            var products = (List<dynamic>)ViewBag.ProductList[categoryId];
+            <!-- Pizza Category -->
+            <div class="category-section mb-5">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="category-title">@b[1]</h3>
+                    <a href="~/Home/Shop?id=@b[0]" class="view-all">Xem tất cả</a>
+                </div>
+                <div class="row product-cards">
+                    @foreach (var a in products)
+                    {
+                        <div class="col-6 col-md-3">
+                            <div class="product-card">
+                                <div class="product-img-container">
+                                    <img src="~/images/@a[3]" alt="@a[2]" class="product-img">
+                                    <div class="product-badge">@a[7]</div>
+                                </div>
+                                <div class="product-info">
+                                    <h5 class="product-title">
+                                        <a href="~/Home/ProductDetails?id=@a[0]">
+                                            @(a[2].Length > 30 ? a[2].Substring(0, 30) + "..." : a[2])
+                                        </a>
+                                    </h5>
+                                    <p class="product-desc">@a[4]</p>
+                                    <div class="product-price">Giá chỉ từ @Convert.ToInt32(a[5]).ToString("#,##0")đ</div>
+                                    <button type="button" class="btn btn-add-cart addToCartBtn" data-toggle="modal" data-target="#productDetailsModal" data-id="@a[0]">
+                                        Thêm vào giỏ hàng
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+<!-- Modal -->
+<div class="modal fade" id="productDetailsModal" tabindex="-1" aria-labelledby="productDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content custom-modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="productDetailsModalLabel">Đặt món</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="productDetailsContent">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Slider functionality
+    const slider = document.getElementById('slider');
+    const slides = document.querySelectorAll('.hero-slide');
+    const dots = document.querySelectorAll('.dot');
+    const prevBtn = document.getElementById('prev');
+    const nextBtn = document.getElementById('next');
+
+    let currentIndex = 0;
+    const slideCount = slides.length;
+
+    function updateSlider() {
+        slider.style.transform = `translateX(-${currentIndex * 100}%)`;
+
+        // Update dots
+        dots.forEach((dot, index) => {
+            if (index === currentIndex) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+    }
+
+    function goToSlide(index) {
+        currentIndex = index;
+        updateSlider();
+    }
+
+    function nextSlide() {
+        currentIndex = (currentIndex + 1) % slideCount;
+        updateSlider();
+    }
+
+    function prevSlide() {
+        currentIndex = (currentIndex - 1 + slideCount) % slideCount;
+        updateSlider();
+    }
+
+    // Event listeners
+    nextBtn.addEventListener('click', nextSlide);
+    prevBtn.addEventListener('click', prevSlide);
+
+    dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => goToSlide(index));
+    });
+
+    // Auto slide
+    let slideInterval = setInterval(nextSlide, 5000);
+
+    // Pause on hover
+    slider.addEventListener('mouseenter', () => {
+        clearInterval(slideInterval);
+    });
+
+    slider.addEventListener('mouseleave', () => {
+        slideInterval = setInterval(nextSlide, 5000);
+    });
+
+    // Smooth scroll for navigation
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+</script>

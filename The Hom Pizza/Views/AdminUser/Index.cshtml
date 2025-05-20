@@ -1,0 +1,255 @@
+﻿@{
+    Layout = "~/Views/Shared/_Admin.cshtml";
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Quản lý người dùng</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="~/Admin/Dashboard">Home</a></li>
+                        <li class="breadcrumb-item active">Danh sách người dùng</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- Main content -->
+    <section class="content">
+
+        <!-- Default box -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Danh sách người dùng</h3>
+
+                <div class="card-tools">
+                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal-addUser">
+                        New User
+                    </button>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-striped projects">
+                    <thead>
+                        <tr>
+                            <th style="width: 20%">
+                                Tên người dùng
+                            </th>
+                            <th>
+                                Số điện thoại
+                            </th>
+                            <th>
+                                Password
+                            </th>
+                            <th>
+                                Email
+                            </th>
+                            <th style="width: 30%">
+                                Địa chỉ
+                            </th>
+                            <th>
+                                Chức danh
+                            </th>
+                            <th style="width: 8%" class="text-center">
+                                Trạng thái
+                            </th>
+                        </tr>
+                    </thead>
+                    @foreach (var a in ViewBag.User)
+                    {
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <ul class="list-inline">
+                                        <li class="list-inline-item">
+                                            <img alt="Avatar" class="table-avatar" src="~/images/@a[5]">
+                                        </li>
+                                        <li class="list-inline-item">
+                                            @a[1]
+                                        </li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    @a[3]
+                                </td>
+                                <td>
+                                    @a[8]
+                                </td>
+                                <td>
+                                    @a[2]
+                                </td>
+                                <td>
+                                    @a[4]
+                                </td>
+                                <td>
+                                    @a[6]
+                                </td>
+                                <td class="project-state">
+                                    @if (Convert.ToBoolean(a[7]))
+                                    {
+                                        <span class="badge badge-success">Hoạt động</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-danger">Đã khóa</span>
+                                    }
+                                </td>
+                                <td class="project-actions text-right">
+                                    <a class="btn btn-primary btn-xs">
+                                        <button type="submit" class="btn btn-info btn-xs" id="idEditContentUser" data-toggle="modal" data-target="#modal-user" data-id="@a[0]">
+                                            <i class="fas fa-pencil-alt"></i>Edit
+                                        </button>
+                                    </a>
+                                    <a class="btn btn-danger btn-xs">
+                                        @if (Convert.ToBoolean(a[7]))
+                                        {
+                                            using (Html.BeginForm("RemoveUser", "AdminUser", FormMethod.Post, new { id = "deleteForm" }))
+                                            {
+                                                <input type="hidden" name="id" value="@a[0]" />
+                                                <button type="button" class="btn btn-danger btn-xs delete-user">
+                                                    <i class="fas fa-trash"></i> Block
+                                                </button>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            using (Html.BeginForm("OpenUser", "AdminUser", FormMethod.Post, new { id = "deleteForm" }))
+                                            {
+                                                <input type="hidden" name="id" value="@a[0]" />
+                                                <button type="button" class="btn btn-danger btn-xs open-user">
+                                                    <i class="fas fa-trash"></i> Open
+                                                </button>
+                                            }
+                                        }
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    }
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+<!--Modal Edit User-->
+<div class="modal fade" id="modal-user">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Edit User</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="editContentUser">
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!--Modal Add User-->
+<div class="modal fade" id="modal-addUser">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Thêm người dùng</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="~/AdminUser/AddUser" method="post" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="inputName">Loại người dùng</label>
+                        <select class="form-control" name="idrole">
+                            @foreach (var a in ViewBag.listRole)
+                            {
+                                <option value="@a[0]">@a[1]</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Tên người dùng</label>
+                        <input type="text" name="name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Số điện thoại</label>
+                        <input type="text" name="phone" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Mật khẩu</label>
+                        <input type="text" name="Password" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="text" name="email" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="address">Địa chỉ (số nhà, tên đường) *</label>
+                        <input type="text" class="form-control" id="address" name="diachi" placeholder="" required>
+                        <div class="invalid-feedback"> Vui lòng điền địa chỉ nhận hàng. </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="province">Tỉnh/Thành *</label>
+                            <select class="form-control" id="province" name="tp" required>
+                                <option value="">Chọn Tỉnh/Thành...</option>
+                            </select>
+                            <div class="invalid-feedback">Vui lòng chọn thành phố.</div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="district">Quận/Huyện *</label>
+                            <select class="form-control" id="district" name="quan" required>
+                                <option value="">Chọn Quận/Huyện...</option>
+                            </select>
+                            <div class="invalid-feedback">Vui lòng chọn quận.</div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="ward">Phường/Xã *</label>
+                            <select class="form-control" id="ward" name="phuong" required>
+                                <option value="">Chọn Phường/Xã...</option>
+                            </select>
+                            <div class="invalid-feedback">Vui lòng chọn phường.</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Avatar người dùng</label>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="customFile" name="image" required>
+                            <label class="custom-file-label" for="customFile">Chọn avatar người dùng</label>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer justify-content-between">
+
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="submitAddUser">Submit</button>
+
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@if (Session["Message"] != null)
+{
+    <script>
+            alert("@Html.Raw(Session["Message"])");
+    </script>
+    Session["Message"] = null; // Xóa sau khi hiển thị
+}
+

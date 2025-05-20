@@ -1,0 +1,374 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Admin.cshtml";
+}
+<style>
+    .table-avatar {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        margin-right: 10px;
+        border-radius: 4px;
+    }
+</style>
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Quản lý danh mục sản phẩm</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="~/Admin/Dashboard">Home</a></li>
+                        <li class="breadcrumb-item active">Danh mục</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Danh mục sản phẩm</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal-addcategory">
+                                    New Category
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body p-0">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th style="width:fit-content">Hình</th>
+                                        <th>Tên danh mục</th>
+                                    </tr>
+                                </thead>
+                                @foreach (var a in ViewBag.list)
+                                {
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <img alt="Avatar" class="table-avatar" src="~/images/@a[3]">
+                                            </td>
+                                            <td>
+                                                @a[1]
+                                            </td>
+                                            <td class="project-actions text-right" style="width: 55%">
+                                                <a class="btn btn-info btn-xs">
+                                                    <button type="submit" class="btn btn-info btn-xs" id="idEditContent" data-toggle="modal" data-target="#modal-editcategory" data-id="@a[0]">
+                                                        <i class="fas fa-pencil-alt">
+                                                        </i>
+                                                        Edit
+                                                    </button>
+                                                </a>
+                                                <a class="btn btn-danger btn-xs">
+                                                    @using (Html.BeginForm("RemoveCategory", "AdminCategory", FormMethod.Post, new { id = "deleteForm" }))
+                                                    {
+                                                        <input type="hidden" name="id" value="@a[0]" />
+                                                        <button type="submit" class="btn btn-danger btn-xs delete-category">
+                                                            <i class="fas fa-trash">
+                                                            </i>
+                                                            Delete
+                                                        </button>
+                                                    }
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                }
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Size Product</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal-addsize">
+                                    New Size
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body p-0">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Tên Size</th>
+                                        <th>Giá Size</th>
+                                        <th style="width: 40px"></th>
+                                    </tr>
+                                </thead>
+                                @foreach (var a in ViewBag.list2)
+                                {
+                                    <tbody>
+                                        <tr>
+                                            <td>@a[1]</td>
+                                            <td>@a[2]</td>
+                                            <td class="project-actions text-right" style="width: 55%">
+                                                <a class="btn btn-info btn-xs">
+                                                    <button type="submit" class="btn btn-info btn-xs" id="idEditContentSize" data-toggle="modal" data-target="#modal-editsize" data-id="@a[0]">
+                                                        <i class="fas fa-pencil-alt"></i>Edit
+                                                    </button>
+                                                </a>
+                                                <a class="btn btn-danger btn-xs">
+                                                    @using (Html.BeginForm("RemoveSize", "AdminCategory", FormMethod.Post, new { id = "deleteForm" }))
+                                                    {
+                                                        <input type="hidden" name="id" value="@a[0]" />
+                                                        <button type="button" class="btn btn-danger btn-xs delete-size">
+                                                            <i class="fas fa-trash"></i> Delete
+                                                        </button>
+                                                    }
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                }
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Crust Pizza</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal-addcrust">
+                                    New Category Pizza
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th>Tên Size</th>
+                                        <th>Tên đế bánh</th>
+                                        <th>Giá Size</th>
+                                        <th>Giá đế bánh</th>
+                                        <th style="width: 40px"></th>
+                                    </tr>
+                                </thead>
+                                @foreach (var a in ViewBag.list3)
+                                {
+                                    <tbody>
+                                        <tr>
+                                            <td>@a[1]</td>
+                                            <td>@a[2]</td>
+                                            <td>@a[3]</td>
+                                            <td>@a[4]</td>
+                                            <td class="project-actions text-right" style="width: 55%">
+                                                <a class="btn btn-info btn-xs">
+                                                    <button type="submit" class="btn btn-info btn-xs" id="idEditContentCrust" data-toggle="modal" data-target="#modal-editcrust" data-id="@a[0]">
+                                                        <i class="fas fa-pencil-alt"></i>Edit
+                                                    </button>
+                                                </a>
+                                                <a class="btn btn-danger btn-xs">
+                                                    @using (Html.BeginForm("RemoveLoaiPizza", "AdminCategory", FormMethod.Post, new { id = "deleteForm" }))
+                                                    {
+                                                        <input type="hidden" name="id" value="@a[0]" />
+                                                        <button type="submit" class="btn btn-danger btn-xs delete-crust">
+                                                            <i class="fas fa-trash"></i> Delete
+                                                        </button>
+                                                    }
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                }
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+<!--Modal Add Category-->
+<div class="modal fade" id="modal-addcategory">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Add Category</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="~/AdminCategory/AddCategory" method="post" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="inputName">Category Name</label>
+                        <input type="text" name="name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Hình loại sản phẩm</label>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="customFile" name="image" required>
+                            <label class="custom-file-label" for="customFile">Choose image category</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+
+                </div>
+            </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!--Modal Edit Category-->
+<div class="modal fade" id="modal-editcategory">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Edit Category</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="editContent">
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!--Modal Add Size-->
+<div class="modal fade" id="modal-addsize">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Add Size</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            @using (Html.BeginForm("AddSize", "AdminCategory", FormMethod.Post))
+            {
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="inputName">Size Name</label>
+                        <input type="text" name="name" class="form-control" required>
+                        <label for="inputName">Size Price</label>
+                        <input type="number" name="price" class="form-control" id="sizePrice" required>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" id="submitAddSize">Submit</button>
+
+                </div>
+            }
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!--Modal Edit Size-->
+<div class="modal fade" id="modal-editsize">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Edit Size</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="editContentSize">
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<!--Modal Add Crust Pizza-->
+<div class="modal fade" id="modal-addcrust">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Add Crust</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            @using (Html.BeginForm("AddLoaiPizza", "AdminCategory", FormMethod.Post))
+            {
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="inputName">Size bánh</label>
+                        <select class="form-control" name="idsize">
+                            @foreach (var a in ViewBag.list2)
+                            {
+                                if (a[0] == ViewBag.list3[0][5])
+                                {
+                                    <option value="@a[0]" selected>@a[1]</option>
+                                }
+                                else
+                                {
+                                    <option value="@a[0]">@a[1]</option>
+                                }
+                            }
+                        </select>
+                        <label for="inputName">Tên đế bánh</label>
+                        <input type="text" name="name" class="form-control" required>
+                        <label for="inputName">Giá đế bánh</label>
+                        <input type="number" name="price" class="form-control" id="crustPrice" required>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" id="submitAddCrust">Submit</button>
+
+                </div>
+            }
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<!--Modal Edit Size-->
+<div class="modal fade" id="modal-editcrust">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Cập nhật đế bánh</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="editContentCrust">
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>

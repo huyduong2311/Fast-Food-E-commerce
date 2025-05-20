@@ -1,0 +1,113 @@
+﻿/* CSS chung */
+.size-crust-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    font-family: sans-serif; /* Chọn font chữ chung */
+    font-weight: 500; /* Giảm độ đậm của chữ */
+}
+
+.size-options,
+.crust-options {
+    display: flex;
+    flex-direction: column;
+}
+
+.options-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.size-options h4,
+.mb-4 h3,
+.crust-options h4 {
+    font-size: 16px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+/* Style cho Kích Thước (dạng button có cùng kích thước) */
+
+.size-options input[type="radio"] {
+    display: none;
+}
+
+    .size-options input[type="radio"] + label {
+        display: inline-flex;
+        flex-direction: column; /* Hiển thị giá tiền bên dưới */
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+        width: 100px; /* Chiều rộng cố định */
+        height: 60px; /* Chiều cao cố định */
+        border: 2px solid #006633;
+        border-radius: 8px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background-color: #fff;
+        color: #333;
+        text-align: center;
+        box-sizing: border-box; /* Đảm bảo padding không ảnh hưởng kích thước */
+    }
+    .size-options input[type="radio"]:checked + label {
+        background-color: #006633;
+        color: #fff;
+        border-color: #006633;
+    }
+
+    .size-options input[type="radio"] + label span.price {
+        margin-top: 5px;
+        font-size: 12px;
+        color: #555;
+    }
+
+/* Style cho Đế */
+.crust-options .options-container {
+    flex-direction: column; /* Xếp dọc các option */
+    margin-bottom: 20px;
+}
+
+.crust-options input[type="radio"] {
+    appearance: none; /* Loại bỏ style mặc định của radio button */
+    width: 16px; /* Kích thước của vòng tròn */
+    height: 16px;
+    border: 2px solid #006633; /* Màu viền */
+    border-radius: 50%; /* Tạo hình tròn */
+    margin-right: 8px;
+    vertical-align: middle; /* Căn giữa theo chiều dọc với text */
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+    .crust-options input[type="radio"]:checked {
+        border-color: #006633; /* Màu viền khi được chọn */
+        background-color: #006633; /* Màu nền khi được chọn */
+        position: relative;
+    }
+
+        .crust-options input[type="radio"]:checked::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            background-color: white;
+            border-radius: 50%;
+        }
+
+.crust-options .crust-label {
+    display: flex;
+    align-items: center; /* Căn giữa theo chiều dọc */
+    margin-bottom: 5px;
+    cursor: pointer;
+}
+
+    .crust-options .crust-label span {
+        display: block;
+    }
+
+

@@ -1,0 +1,21 @@
+﻿
+<form action="~/AdminCategory/UpdateCategory" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="inputName">Category Name</label>
+        <input type="hidden" name="id" value="@ViewBag.list[0][0]">
+        <input type="text" name="name" class="form-control" placeholder="Enter category name" value="@ViewBag.list[0][1]">
+
+        <label>Hình danh mục</label>
+        <div class="custom-file">
+            <input type="file" class="custom-file-input" id="customFile" name="image" value="@ViewBag.list[0][3]">
+            <label class="custom-file-label" for="customFile">Choose image category</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+
+</form>
+<!--JS-->
+@Scripts.Render("~/jso")

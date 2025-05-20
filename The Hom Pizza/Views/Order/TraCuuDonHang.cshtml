@@ -1,0 +1,113 @@
+﻿@{
+    ViewBag.Title = "Tra Cứu Đơn Hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-lg border-0 p-4">
+                <h3 class="text-center mb-4 fw-bold text-dark">Tra Cứu Đơn Hàng</h3>
+                <form method="post" action="@Url.Action("TraCuuDonHang", "Order")">
+                    <div class="form-group mb-3">
+                        <label for="phoneNumber" class="form-label">Số điện thoại</label>
+                        <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Nhập số điện thoại của bạn" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Xem đơn hàng</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    @if (ViewBag.Orders != null && ViewBag.Orders.Count > 0)
+    {
+        <div class="mt-5">
+            <h4 class="text-center mb-4 fw-bold">Kết quả tra cứu</h4>
+            <div class="table-responsive shadow-sm">
+                <table class="table table-hover table-bordered align-middle text-center">
+                    <thead class="table-primary text-dark">
+                        <tr>
+                            <th>Món</th>
+                            <th>Địa chỉ giao hàng</th>
+                            <th>Ngày đặt</th>
+                            <th>Tổng tiền</th>
+                            <th>Thanh toán</th>
+                            <th>Tiến độ</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var a in ViewBag.Orders)
+                        {
+                            <tr>
+                                <td>
+                                    <a href="~/Order/ChiTietDonHang?id=@a[0]" class="btn btn-sm btn-outline-info">
+                                        Xem món
+                                    </a>
+                                </td>
+                                <td class="text-start">@a[4]</td>
+                                <td>@Convert.ToDateTime(a[3]).ToString("dd/MM/yyyy")</td>
+                                <td class="text-end text-danger fw-bold">@Convert.ToInt32(a[5]).ToString("#,##0")đ</td>
+                                <td>@a[7]</td>
+                                <td>
+                                    <span class="badge bg-info text-dark">@a[9]</span>
+                                </td>
+                                <td>
+                                    @if (Convert.ToBoolean(a[8]))
+                                    {
+                                        <span class="badge bg-success">Đã thanh toán</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning text-dark">Chưa thanh toán</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (a[9].ToString() == "Chưa xác nhận")
+                                    {
+                                        <button class="btn btn-sm btn-danger btnCancelOrder" data-orderid="@a[0]">
+                                            Hủy đơn
+                                        </button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+    else if (!string.IsNullOrEmpty(ViewBag.Error))
+    {
+        <div class="alert alert-warning mt-4 text-center">
+            <strong>@ViewBag.Error</strong>
+        </div>
+    }
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const cancelButtons = document.querySelectorAll(".btnCancelOrder");
+        cancelButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                const orderId = this.getAttribute("data-orderid");
+                if (confirm("Bạn có chắc chắn muốn hủy đơn hàng này không?")) {
+                    fetch(`/Order/HuyDonHang?id=${orderId}`, {
+                        method: "POST"
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                alert("Hủy đơn hàng thành công!");
+                                location.reload();
+                            } else {
+                                alert("Hủy đơn hàng thất bại. Vui lòng thử lại!");
+                            }
+                        })
+                        .catch(error => console.error("Lỗi:", error));
+                }
+            });
+        });
+    });
+</script>

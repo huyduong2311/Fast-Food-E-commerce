@@ -1,0 +1,149 @@
+﻿
+@{
+    ViewBag.Title = "Registration";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f8f9fa, #dee2e6);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .register-container {
+            max-width: 500px;
+            margin: 80px auto;
+            padding: 35px 40px;
+            background-color: #ffffff;
+            border-radius: 18px;
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.08);
+        }
+
+            .register-container h2 {
+                text-align: center;
+                font-weight: 600;
+                margin-bottom: 30px;
+            }
+
+        .form-control {
+            border-radius: 10px;
+        }
+
+        .btn-register {
+            background-color: #198754;
+            color: white;
+            font-weight: 500;
+            border-radius: 10px;
+        }
+
+            .btn-register:hover {
+                background-color: #157347;
+            }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+            .login-link a {
+                color: #198754;
+                text-decoration: none;
+            }
+
+                .login-link a:hover {
+                    text-decoration: underline;
+                }
+
+        div[style*="z-index: 2147483647"] {
+            display: none !important;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <div class="register-container shadow">
+            @using (Html.BeginForm("Registration", "User", FormMethod.Post, new { id = "registerForm" }))
+            {
+                <h2>Tạo tài khoản</h2>
+                <div class="mb-3">
+                    <input type="text" name="name" class="form-control" placeholder="Họ tên" required />
+                </div>
+                <div class="mb-3">
+                    <input type="text" name="phone" class="form-control" placeholder="Số điện thoại" required />
+                </div>
+                <div class="mb-3">
+                    <input type="email" name="email" class="form-control" placeholder="Email" required />
+                </div>
+                <div class="mb-3">
+                    <input type="password" name="Password" class="form-control" placeholder="Mật khẩu" required />
+                </div>
+                <div class="d-grid">
+                    <input type="submit" id="thongbao" class="btn btn-register" value="Đăng ký" />
+                </div>
+                <div class="login-link">
+                    <p>Đã có tài khoản? <a href="~/User/Login">Đăng nhập</a></p>
+                </div>
+            }
+        </div>
+    </div>
+    <script>
+        window.onload = function () {
+            document.querySelectorAll("center a[href='http://somee.com']").forEach(el => el.remove());
+            document.querySelectorAll("script[src*='somee.com/serveimages/ad2/WholeInsert5.js']").forEach(el => el.remove());
+        };
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    $(document).ready(function () {
+        $('#thongbao').click(function (e) {
+            e.preventDefault();
+            var form = $(this).closest('form');
+            var formData = form.serialize();
+            var url = form.attr('action');
+            console.log("URL AJAX:", url); // Kiểm tra URL trong console
+
+            $.ajax({
+                url: url,
+                type: form.attr('method'),
+                data: formData,
+                dataType: 'json', // Bắt buộc
+                success: function (response) {
+                    console.log("Response:", response); // In response ra console
+                    if (response.success) {
+                        Swal.fire({
+                            title: response.message,
+                            icon: "success",
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => {
+                           window.location.href = '@Url.Action("Login", "User")';
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Lỗi!",
+                            text: response.message,
+                            icon: "error"
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Lỗi AJAX:", status, error, xhr.responseText);
+                    Swal.fire({
+                        title: "Lỗi!",
+                        text: "Đã có lỗi xảy ra. Vui lòng thử lại.",
+                        icon: "error"
+                    });
+                }
+            });
+        });
+    });
+    </script>
+</body>
+</html>

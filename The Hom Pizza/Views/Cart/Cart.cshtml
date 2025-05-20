@@ -1,0 +1,164 @@
+﻿
+@{
+    ViewBag.Title = "Cart";
+}
+<!-- Breadcrumb -->
+<section class="py-3 bg-light">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="~/Home/Index">Trang chủ</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Giỏ hàng</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<!-- Cart Content -->
+<section class="py-5">
+    <div class="container">
+        <h1 class="mb-4">Giỏ hàng</h1>
+
+        @if (ViewBag.CartItems != null && ViewBag.CartItems.Count > 0)
+        {
+            <div class="row" id="cart-content">
+                <div class="col-lg-8">
+                    <div class="cart-items">
+                        @foreach (var item in ViewBag.CartItems)
+                        {
+                            bool isLoggedIn = ViewBag.UserID != null;
+                            var name = isLoggedIn ? item[1]?.ToString() : item.ProductName;
+                            var image = isLoggedIn ? item[2]?.ToString() : item.Image;
+                            var quantity = isLoggedIn ? Convert.ToInt32(item[4]) : item.Quantity;
+                            var note = isLoggedIn ? item[14]?.ToString() : item.Note;
+                            var productId = isLoggedIn ? item[0] : item.ProductID;
+                            var pizzaId = isLoggedIn ? item[6] : item.PizzaID;
+                            var total = isLoggedIn ? Convert.ToInt32(item[12]) : item.GrandTotal;
+                            var size = isLoggedIn ? item[7]?.ToString() : item.TenSize;
+                            var crust = isLoggedIn ? item[9]?.ToString() : item.TenDeBanh;
+                            bool hasPizza = false;
+
+                            if (isLoggedIn)
+                            {
+                                hasPizza = pizzaId != null && pizzaId.ToString() != "" && pizzaId.ToString() != "0";
+                            }
+                            else
+                            {
+                                hasPizza = pizzaId != 0;
+                            }
+
+                            string formId = $"form_{productId}_{pizzaId}";
+                            <div class="cart-items mb-3">
+                                <div class="row align-items-center">
+                                    <div class="col-3 col-md-2">
+                                        <img src="~/images/@image" alt="" class="cart-item-img w-100 rounded" />
+                                    </div>
+                                    <div class="col-5 col-md-6">
+                                        <h5 class="cart-items-title mb-1">@(name.Length > 40 ? name.Substring(0, 40) + "..." : name)</h5>
+                                        @if (hasPizza)
+                                        {
+                                            <p class="cart-items-info text-muted small mb-0">Cỡ: @size" - Đế: @crust</p>
+                                        }
+                                        @if (!string.IsNullOrEmpty(note))
+                                        {
+                                            <p class="cart-items-info text-muted small mb-0">
+                                                <i class="fas fa-sticky-note me-1"></i> Ghi chú: @note
+                                            </p>
+                                        }
+                                    </div>
+                                    <div class="col-2 col-md-2">
+                                        <form id="@formId" class="update-cart-form">
+                                            <input type="hidden" name="idsp" value="@productId" />
+                                            <input type="hidden" name="idpizza" value="@pizzaId" />
+                                            <input type="hidden" name="note" value="@note" />
+
+                                            <div class="d-flex align-items-center">
+                                                <button type="button" class="btn-quantity" onclick="changeQuantity(this, -1)">
+                                                    <i class="fas fa-minus"></i>
+                                                </button>
+                                                <input type="number"
+                                                       name="quanlity"
+                                                       class="quantity-input mx-2 text-center"
+                                                       value="@quantity"
+                                                       min="1"
+                                                       max="100"
+                                                       onchange="updateQuantityAjax(this)" />
+                                                <button type="button" class="btn-quantity" onclick="changeQuantity(this, 1)">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                    <div class="col-1 col-md-1 text-nowrap">
+                                        <div class="cart-items-price">@total.ToString("#,##0")đ</div>
+                                    </div>
+                                    <div class="col-1 col-md-1 text-end">
+                                        <button type="button"
+                                                class="btn btn-sm text-danger deleteCart"
+                                                data-id="@productId"
+                                                data-idpizza="@pizzaId"
+                                                data-note="@note"
+                                                title="Xóa">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+
+                <div class="col-lg-4 mt-4 mt-lg-0">
+                    <div class="cart-summary">
+                        <h4 class="mb-4">Tổng tiền</h4>
+
+                        <div class="summary-row">
+                            <div>Tạm tính</div>
+                            <div> @Convert.ToInt32(ViewBag.TotalAmount).ToString("#,##0")đ</div>
+                        </div>
+
+                        <div class="summary-row">
+                            <div>Phí vận chuyển</div>
+                            <div>0đ</div>
+                        </div>
+
+                        <div class="summary-row summary-total">
+                            <div>Tổng cộng</div>
+                            <div>@Convert.ToInt32(ViewBag.TotalAmount).ToString("#,##0")đ</div>
+                        </div>
+
+                        <a href="~/Payment/Checkout" class="btn-checkout mt-4 d-inline-block text-center">
+                            Thanh toán
+                        </a>
+
+                        <a href="~/Home/Index" class="btn btn-continue-shopping mt-3">
+                            Tiếp tục mua hàng
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <!-- Empty Cart Message (shown by default, hidden when cart has items) -->
+            <div class="empty-cart" id="empty-cart">
+                <div class="empty-cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <h3 class="mb-3">Rất tiếc!!! Bạn không có sản phẩm ở đây.</h3>
+                <p class="mb-4">Chúng tôi sẽ giao hàng với hoá đơn trên 100.000đ</p>
+                <div class="d-flex justify-content-center">
+                    <a href="~/Home/Index" class="btn btn-continue-shopping">
+                        <i class="fas fa-arrow-left me-2"></i>
+                        Tiếp tục mua hàng
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+
+

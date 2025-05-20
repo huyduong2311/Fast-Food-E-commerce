@@ -1,0 +1,141 @@
+﻿
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            background: linear-gradient(to right, #f8f9fa, #e9ecef);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .login-container {
+            max-width: 420px;
+            margin: 80px auto;
+            padding: 30px 40px;
+            background-color: #fff;
+            border-radius: 16px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+
+            .login-container h2 {
+                margin-bottom: 24px;
+                font-weight: 600;
+                text-align: center;
+            }
+
+        .form-control {
+            border-radius: 10px;
+        }
+
+        .btn-login {
+            border-radius: 10px;
+            background-color: #0d6efd;
+            color: #fff;
+            font-weight: 500;
+        }
+
+            .btn-login:hover {
+                background-color: #0b5ed7;
+            }
+
+        .register-link {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+            .register-link a {
+                color: #0d6efd;
+                text-decoration: none;
+            }
+
+                .register-link a:hover {
+                    text-decoration: underline;
+                }
+
+        div[style*="z-index: 2147483647"] {
+            display: none !important;
+        }
+    </style>
+
+    <style>
+        div[style*="z-index: 2147483647"] {
+            display: none !important;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <div class="login-container shadow">
+            @using (Html.BeginForm("Login", "User", FormMethod.Post, new { id = "loginForm" }))
+            {
+                <h2>Đăng nhập</h2>
+                <div class="mb-3">
+                    <input type="text" name="phone" class="form-control" placeholder="Số điện thoại" required />
+                </div>
+                <div class="mb-3">
+                    <input type="password" name="password" class="form-control" placeholder="Mật khẩu" required />
+                </div>
+                <div class="d-grid">
+                    <input type="submit" id="thongbao" class="btn btn-login" value="Đăng nhập" />
+                </div>
+                <div class="register-link">
+                    <p>Bạn chưa có tài khoản? <a href="~/User/Registration">Đăng ký ngay</a></p>
+                </div>
+            }
+        </div>
+    </div>
+    <script>
+        window.onload = function () {
+            document.querySelectorAll("center a[href='http://somee.com']").forEach(el => el.remove());
+            document.querySelectorAll("script[src*='somee.com/serveimages/ad2/WholeInsert5.js']").forEach(el => el.remove());
+        };
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(function () {
+    $('#thongbao').click(function (e) {
+        e.preventDefault();
+        var form = $(this).closest('form');
+        var formData = form.serialize();
+        var url = '@Url.Action("Login", "User")';
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: formData,
+            dataType: 'json',
+            success: function (response) {
+                if (response.success) {
+                    // Điều hướng tới trang đích
+                    window.location.href = response.redirectUrl;
+                } else {
+                    Swal.fire({
+                        title: "Lỗi!",
+                        text: response.message,
+                        icon: "error"
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                Swal.fire({
+                    title: "Lỗi!",
+                    text: "Đã có lỗi xảy ra. Vui lòng thử lại.",
+                    icon: "error"
+                });
+            }
+        });
+    });
+});
+
+    </script>
+</body>
+</html>

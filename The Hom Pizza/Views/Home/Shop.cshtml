@@ -1,0 +1,203 @@
+﻿
+@{
+    ViewBag.Title = "Shop";
+}
+@{
+    string tenLoaiSP = ViewBag.list3 is string ? ViewBag.list3 : ViewBag.list3[0][0].ToString();
+}
+<!-- Breadcrumb -->
+<section class="py-3 bg-light">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="~/Home/Index">Trang chủ</a></li>
+                <li class="breadcrumb-item active" aria-current="page">@tenLoaiSP</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+<!-- Start Shop Page  -->
+<div class="shop-box-inner">
+    <div class="container">
+        <div class="category-section mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 class="category-title">@tenLoaiSP</h3>
+            </div>
+            <div class="row product-cards">
+                <div class="row">
+                    <div class="col-xl-9 col-lg-9 col-sm-12 col-xs-12 shop-content-right">
+                        <div class="right-product-box">
+                            <div class="product-categorie-box">
+                                <div class="tab-content">
+                                    <div role="tabpanel" class="tab-pane fade show active" id="grid-view">
+                                        <div class="row">
+                                            @if (ViewBag.list != null && ViewBag.list.Count > 0)
+                                            {
+                                                foreach (var a in ViewBag.list)
+                                                {
+                                                    <div class="col-6 col-md-3">
+                                                        <div class="product-card">
+                                                            <div class="product-img-container">
+                                                                <img src="~/images/@a[3]" alt="@a[2]" class="product-img">
+                                                                <div class="product-badge">@a[7]</div>
+                                                            </div>
+                                                            <div class="product-info">
+                                                                <h5 class="product-title">
+                                                                    <a href="~/Home/ProductDetails?id=@a[0]">
+                                                                        @(a[2].Length > 30 ? a[2].Substring(0, 30) + "..." : a[2])
+                                                                    </a>
+                                                                </h5>
+                                                                <p class="product-desc">@a[4]</p>
+                                                                <div class="product-price">Giá chỉ từ @Convert.ToInt32(a[5]).ToString("#,##0")đ</div>
+                                                                <button type="button" class="btn btn-add-cart addToCartBtn" data-toggle="modal" data-target="#productDetailsModal" data-id="@a[0]">
+                                                                    Thêm vào giỏ hàng
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <div class="col-12 text-center mt-5">
+                                                    <h3 style="font-size: 24px;">
+                                                        <i class="fas fa-exclamation-circle"></i> Không tìm thấy sản phẩm phù hợp!
+                                                    </h3>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @if (ViewBag.CartItems != null && ViewBag.CartItems.Count > 0)
+                    {
+                        <div class="col-xl-3 col-lg-3 col-sm-12 col-xs-12 sidebar-shop-left">
+                            <div class="product-categorie">
+                                <div class="cart-container">
+                                    <p class="cart-title">Giỏ hàng của tôi</p>
+                                    <div id="cart-items">
+                                        @foreach (var item in ViewBag.CartItems)
+                                        {
+                                            bool isLoggedIn = ViewBag.UserID != null;
+                                            var name = isLoggedIn ? item[1]?.ToString() : item.ProductName;
+                                            var image = isLoggedIn ? item[2]?.ToString() : item.Image;
+                                            var quantity = isLoggedIn ? Convert.ToInt32(item[4]) : item.Quantity;
+                                            var note = isLoggedIn ? item[14]?.ToString() : item.Note;
+                                            var productId = isLoggedIn ? item[0] : item.ProductID;
+                                            var pizzaId = isLoggedIn ? item[6] : item.PizzaID;
+                                            var total = isLoggedIn ? Convert.ToInt32(item[12]) : item.GrandTotal;
+                                            var size = isLoggedIn ? item[7]?.ToString() : item.TenSize;
+                                            var crust = isLoggedIn ? item[9]?.ToString() : item.TenDeBanh;
+                                            bool hasPizza = false;
+
+                                            if (isLoggedIn)
+                                            {
+                                                hasPizza = pizzaId != null && pizzaId.ToString() != "" && pizzaId.ToString() != "0";
+                                            }
+                                            else
+                                            {
+                                                hasPizza = pizzaId != 0;
+                                            }
+
+                                            string formId = $"form_{productId}_{pizzaId}";
+                                            <div class="cart-item">
+                                                <img src="~/images/@image" alt="" class="item-img">
+                                                <div class="item-info">
+                                                    <div class="item-name">@(name.Length > 40 ? name.Substring(0, 40) + "..." : name)</div>
+                                                    <div class="item-detail">
+                                                        @if (hasPizza)
+                                                        {
+                                                            <p>Kích thước - @size" <br> Đế - @crust<br></p>
+                                                        }
+                                                        @if (!string.IsNullOrEmpty(note))
+                                                        {
+                                                            <p class="cart-items-info text-muted small mb-0">
+                                                                <i class="fas fa-sticky-note me-1"></i> Ghi chú: @note
+                                                            </p>
+                                                        }
+                                                        <div class="item-detail">Số lượng:</div>
+                                                        <form id="@formId" class="item-quantity">
+                                                            <input type="hidden" name="idsp" value="@productId" />
+                                                            <input type="hidden" name="idpizza" value="@pizzaId" />
+                                                            <input type="hidden" name="note" value="@note" />
+
+                                                            <div class="d-flex align-items-center">
+                                                                <button type="button" class="qty-btn minus" onclick="changeQuantity(this, -1)">
+                                                                    <i class="fas fa-minus"></i>
+                                                                </button>
+                                                                <input type="number"
+                                                                       name="quanlity"
+                                                                       class="quantity-input mx-2 text-center"
+                                                                       value="@quantity"
+                                                                       min="1"
+                                                                       max="100"
+                                                                       onchange="updateQuantityAjax(this)" />
+                                                                <button type="button" class="qty-btn plus" onclick="changeQuantity(this, 1)">
+                                                                    <i class="fas fa-plus"></i>
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                    <div class="item-price">@total.ToString("#,##0")đ</div>
+                                                </div>
+                                                <button type="button"
+                                                        class="remove-btn deleteCart"
+                                                        data-id="@productId"
+                                                        data-idpizza="@pizzaId"
+                                                        data-note="@note"
+                                                        title="Xóa">
+                                                    🗑️
+                                                </button>
+                                            </div>
+                                        }
+                                    </div>
+
+                                    <div class="cart-total">
+                                        <span>Tổng Tiền</span>
+                                        <strong class="total-price">@Convert.ToInt32(ViewBag.TotalAmount).ToString("#,##0")đ</strong>
+                                    </div>
+                                    <a href="~/Payment/Checkout">
+                                        <button class="checkout-btn">Thanh toán</button>
+                                    </a>
+                                </div>
+
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-xl-3 col-lg-3 col-sm-12 col-xs-12 sidebar-shop-left">
+                            <div class="product-categorie">
+                                <div class="cart-container">
+                                    <p class="cart-title">Giỏ hàng của tôi</p>
+                                    <div id="empty-cart" class="empty-cart">
+                                        <img src="https://cdn-icons-png.flaticon.com/512/1170/1170678.png" alt="empty">
+                                        <p>Giỏ hàng của bạn đang trống</p>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- End Shop Page -->
+<!-- Modal -->
+<div class="modal fade" id="productDetailsModal" tabindex="-1" aria-labelledby="productDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content custom-modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="productDetailsModalLabel">Đặt món</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="productDetailsContent">
+            </div>
+        </div>
+    </div>
+</div>

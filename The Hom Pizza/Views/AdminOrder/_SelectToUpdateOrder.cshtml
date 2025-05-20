@@ -1,0 +1,37 @@
+﻿<form action="~/AdminOrder/UpdateOrder" method="post">
+    <div class="form-group">
+        <input type="hidden" name="id" value="@ViewBag.list[0][0]">
+
+        <label>Địa chỉ giao hàng</label>
+        <input type="text" name="diachi" class="form-control" placeholder="Enter your address" value="@ViewBag.list[0][4]">
+        <label>Ghi chú đơn hàng</label>
+        <textarea class="form-control" name="note" rows="3" placeholder="Enter Note" value="@ViewBag.list[0][6]"></textarea>
+
+        <label>Hình thức thanh toán</label>
+        <select class="form-control" name="httt">
+            <option value="Ship COD" @(ViewBag.list[0][7].ToString() == "Ship COD" ? "selected" : "")>Ship COD</option>
+            <option value="Chuyển khoản VNPAY" @(ViewBag.list[0][7].ToString() == "Chuyển khoản VNPAY" ? "selected" : "")>VN PAY</option>
+        </select>
+
+        <label>Tình trạng thanh toán</label>
+        <select class="form-control" name="ispayment">
+            <option value="True" @(ViewBag.list[0][8].ToString() == "True" ? "selected" : "")>Đã thanh toán</option>
+            <option value="False" @(ViewBag.list[0][8].ToString() == "False" ? "selected" : "")>Chưa thanh toán</option>
+        </select>
+
+        <label>Trạng thái đơn hàng</label>
+        <select class="form-control" name="status">
+            <option value="Chưa xác nhận" @(ViewBag.list[0][9].ToString() == "Chưa xác nhận" ? "selected" : "")>Chưa xác nhận</option>
+            <option value="Đang giao" @(ViewBag.list[0][9].ToString() == "Đang giao" ? "selected" : "")>Đang giao</option>
+            <option value="Đã giao" @(ViewBag.list[0][9].ToString() == "Đã giao" ? "selected" : "")>Đã giao</option>
+            <option value="Hủy đơn" @(ViewBag.list[0][9].ToString() == "Hủy đơn" ? "selected" : "")>Hủy đơn</option>
+        </select>
+
+    </div>
+
+    <div class="form-group">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary" id="submitUpdateProduct">Submit</button>
+    </div>
+</form>
+@Scripts.Render("~/jso")

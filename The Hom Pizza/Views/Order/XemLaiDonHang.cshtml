@@ -1,0 +1,100 @@
+﻿@{
+    ViewBag.Title = "Lịch sử đặt hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container my-5">
+    <div class="text-center mb-4">
+        <h2 class="fw-bold">Lịch sử đặt hàng</h2>
+    </div>
+
+    @if (ViewBag.list != null && ViewBag.list.Count > 0)
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle text-center">
+                <thead class="table-dark text-white">
+                    <tr>
+                        <th>Món</th>
+                        <th>Địa chỉ giao hàng</th>
+                        <th>Ngày đặt</th>
+                        <th>Tổng tiền</th>
+                        <th>Thanh toán</th>
+                        <th>Tiến độ</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var a in ViewBag.list)
+                    {
+                        <tr>
+                            <td>
+                                <a href="~/Order/ChiTietDonHang?id=@a[0]" class="btn btn-sm btn-outline-primary">
+                                    Xem món
+                                </a>
+                            </td>
+                            <td class="text-start">@a[4]</td>
+                            <td>@Convert.ToDateTime(a[3]).ToString("dd/MM/yyyy")</td>
+                            <td class="text-end text-danger fw-bold">@Convert.ToInt32(a[5]).ToString("#,##0")đ</td>
+                            <td>@a[7]</td>
+                            <td>
+                                <span class="badge bg-info text-dark">@a[9]</span>
+                            </td>
+                            <td>
+                                @if (Convert.ToBoolean(a[8]))
+                                {
+                                    <span class="badge bg-success">Đã thanh toán</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark">Chưa thanh toán</span>
+                                }
+                            </td>
+                            <td>
+                                @if (a[9].ToString() == "Chưa xác nhận")
+                                {
+                                    <button class="btn btn-sm btn-danger btnCancelOrder" data-orderid="@a[0]">
+                                        Hủy đơn
+                                    </button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning text-center p-5 shadow-sm mt-4">
+            <h4 class="mb-2">Bạn chưa có đơn hàng nào.</h4>
+            <p>Hãy quay lại trang cửa hàng và chọn món ngay!</p>
+        </div>
+    }
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const cancelButtons = document.querySelectorAll(".btnCancelOrder");
+        cancelButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                const orderId = this.getAttribute("data-orderid");
+                if (confirm("Bạn có chắc chắn muốn hủy đơn hàng này không?")) {
+                    fetch(`/Order/HuyDonHang?id=${orderId}`, {
+                        method: "POST"
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                alert("Hủy đơn hàng thành công!");
+                                location.reload();
+                            } else {
+                                alert("Hủy đơn hàng thất bại. Vui lòng thử lại!");
+                            }
+                        })
+                        .catch(error => console.error("Lỗi:", error));
+                }
+            });
+        });
+    });
+</script>

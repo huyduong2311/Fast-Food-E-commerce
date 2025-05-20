@@ -1,0 +1,52 @@
+﻿<form action="~/AdminProduct/UpdateProduct" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <input type="hidden" name="id" value="@ViewBag.list[0][0]">
+        <label for="inputName">Loại món</label>
+        <select class="form-control" name="idcategory">
+            @foreach (var a in ViewBag.listLoaiSP)
+            {
+                if (a[0] == ViewBag.list[0][1])
+                {
+                    <option value="@a[0]" selected>@a[1]</option>
+                }
+                else
+                {
+                    <option value="@a[0]">@a[1]</option>
+                }
+            }
+        </select>
+        <label>Tên món</label>
+        <input type="text" name="name" class="form-control" placeholder="Enter product name" value="@ViewBag.list[0][2]">
+        <label>Mô tả</label>
+        <textarea class="form-control" name="des" rows="3" placeholder="Enter Description" value="@ViewBag.list[0][4]"></textarea>
+        <label>Giá</label>
+        <input type="number" name="price" class="form-control" placeholder="Enter product price" value="@ViewBag.list[0][5]" id="productPrice">
+        <label>Tình trạng món</label>
+        <input type="text" name="status" class="form-control" placeholder="Enter product price" value="@ViewBag.list[0][7]">
+        <label>Hình món</label>
+        <div class="custom-file">
+            <input type="file" class="custom-file-input" id="customFile" name="image" value="@ViewBag.list[0][3]">
+            <label class="custom-file-label" for="customFile">Choose image product</label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary" id="submitUpdateProduct">Submit</button>
+    </div>
+</form>
+
+<!--JS-->
+<script>
+    document.getElementById("submitUpdateProduct").addEventListener("click", function (event) {
+        const priceInput = document.getElementById("productPrice");
+        const priceValue = parseFloat(priceInput.value);
+
+        if (priceValue < 0) {
+            alert("Giá không được là số âm. Vui lòng nhập lại!");
+            event.preventDefault(); // Ngăn gửi form
+        }
+    });
+</script>
+@Scripts.Render("~/jso")
+

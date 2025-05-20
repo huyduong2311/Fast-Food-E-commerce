@@ -1,0 +1,30 @@
+﻿@using (Html.BeginForm("UpdateSize", "AdminCategory", FormMethod.Post, new { id = "updateSizeForm" }))
+{
+    <div class="form-group">
+        <label for="inputName">Size Name</label>
+        <input type="hidden" name="id" value="@ViewBag.list[0][0]">
+        <input type="text" name="name" class="form-control" placeholder="Enter size name" value="@ViewBag.list[0][1]">
+
+        <label for="inputPrice">Size Price</label>
+        <input type="number" name="price" class="form-control" placeholder="Enter size price" value="@ViewBag.list[0][2]" id="sizePrice">
+    </div>
+
+    <div class="form-group">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary" id="submitUpdateSize">Submit</button>
+    </div>
+}
+
+<!--JS-->
+<script>
+    document.getElementById("submitUpdateSize").addEventListener("click", function (event) {
+        const priceInput = document.getElementById("sizePrice");
+    const priceValue = parseFloat(priceInput.value);
+
+    if (priceValue < 0) {
+        alert("Giá không được là số âm. Vui lòng nhập lại!");
+    event.preventDefault(); // Ngăn gửi form
+        }
+    });
+</script>
+@Scripts.Render("~/jso")

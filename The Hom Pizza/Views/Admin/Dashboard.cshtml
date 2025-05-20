@@ -1,0 +1,213 @@
+﻿@{
+    Layout = "~/Views/Shared/_Admin.cshtml";
+}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Thống kê doanh thu</h1>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <!-- Info boxes -->
+            <div class="row">
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-info">
+                        <div class="inner">
+                            @{
+                                int doanhThu = 0;
+                                if (ViewBag.DoanhThu != null && ViewBag.DoanhThu.Count > 0 && ViewBag.DoanhThu[0].Count > 0)
+                                {
+                                    int.TryParse(ViewBag.DoanhThu[0][0]?.ToString(), out doanhThu);
+                                }
+                            }
+                            <h3>@doanhThu.ToString("#,##0")<sup style="font-size: 20px">VND</sup></h3>
+
+                            <p>Tổng doanh thu</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-stats-bars"></i>
+                        </div>
+                        <a href="#" class="small-box-footer">View Details <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-danger">
+                        <div class="inner">
+                            <h3>@ViewBag.OrderAmount[0][0]</h3>
+                            <p>Số đơn hàng</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-pie-graph"></i>
+                        </div>
+                        <a href="~/AdminOrder/Index" class="small-box-footer">View Details <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-warning">
+                        <div class="inner">
+                            <h3>@ViewBag.UserAmount[0][0]</h3>
+                            <p>Số người dùng</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-person-add"></i>
+                        </div>
+                        <a href="~/AdminUser/Index" class="small-box-footer">View Details <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-danger">
+                        <div class="inner">
+                            <h3>@ViewBag.FeedbackAmount[0][0]</h3>
+                            <p>Đánh giá</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-pie-graph"></i>
+                        </div>
+                        <a href="#" class="small-box-footer">View Details <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                <!-- ./col -->
+            </div>
+        </div><!--/. container-fluid -->
+    </section>
+    <!-- /.content -->
+    <!-- Main content -->
+    <section class="content">
+        <!-- Default box -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Tổng doanh thu: <span id="totalAmount">0</span> VND</h2>
+
+                <div class="card-tools">
+                    <div class="filter-container">
+                        <label for="startDate">Từ ngày:</label>
+                        <input type="date" id="startDate">
+
+                        <label for="endDate">Đến ngày:</label>
+                        <input type="date" id="endDate">
+
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default filter-btn" data-type="all">Tất cả</button>
+                            <button type="button" class="btn btn-default filter-btn" data-type="Ship COD">SHIP COD</button>
+                            <button type="button" class="btn btn-default filter-btn" data-type="Chuyển khoản VNPAY">VNPAY</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-striped projects">
+                    <thead>
+                        <tr>
+                            <th>Tên khách hàng</th>
+                            <th>Địa chỉ giao hàng</th>
+                            <th>Ngày đặt hàng</th>
+                            <th>Tổng tiền</th>
+                            <th>Hình thức thanh toán</th>
+                            <th>Tiến độ đơn hàng</th>
+                            <th style="width: 8%" class="text-center">Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orderTableBody">
+                        @foreach (var a in ViewBag.list)
+                        {
+                            <tr class="order-row" data-date="@Convert.ToDateTime(a[3]).ToString("yyyy-MM-dd")" data-type="@a[5]" data-amount="@a[4]">
+                                <td>@a[1]</td>
+                                <td>@a[2]</td>
+                                <td>@Convert.ToDateTime(a[3]).ToString("dd/MM/yyyy")</td>
+                                <td>@Convert.ToInt32(a[4]).ToString("#,##0")đ</td>
+                                <td>@a[5]</td>
+                                <td>@a[6]</td>
+                                <td class="project-state">
+                                    @if (Convert.ToBoolean(a[7]))
+                                    {
+                                        <span class="badge badge-success">Đã thanh toán</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-danger">Chưa thanh toán</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const orderRows = document.querySelectorAll(".order-row");
+        const filterButtons = document.querySelectorAll(".filter-btn");
+        const startDateInput = document.getElementById("startDate");
+        const endDateInput = document.getElementById("endDate");
+        const totalAmountElement = document.getElementById("totalAmount");
+
+        let currentFilter = "all";
+
+        // Hàm cập nhật danh sách hiển thị
+        function updateOrderList() {
+            let totalAmount = 0;
+            const startDate = startDateInput.value ? new Date(startDateInput.value) : null;
+            const endDate = endDateInput.value ? new Date(endDateInput.value) : null;
+
+            orderRows.forEach(row => {
+                const orderDate = new Date(row.dataset.date);
+                const orderType = row.dataset.type;
+                const orderAmount = parseFloat(row.dataset.amount) || 0;
+
+                let isDateInRange = true;
+                let isTypeMatch = (currentFilter === "all" || orderType === currentFilter);
+
+                if (startDate && orderDate < startDate) isDateInRange = false;
+                if (endDate && orderDate > endDate) isDateInRange = false;
+
+                if (isDateInRange && isTypeMatch) {
+                    row.style.display = "";
+                    totalAmount += orderAmount;
+                } else {
+                    row.style.display = "none";
+                }
+            });
+
+            totalAmountElement.textContent = totalAmount.toLocaleString("vi-VN");
+        }
+
+        // Bắt sự kiện thay đổi ngày
+        startDateInput.addEventListener("change", updateOrderList);
+        endDateInput.addEventListener("change", updateOrderList);
+
+        // Bắt sự kiện click vào nút lọc
+        filterButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                currentFilter = this.dataset.type;
+                updateOrderList();
+            });
+        });
+
+        updateOrderList(); // Cập nhật lần đầu
+    });
+
+
+</script>

@@ -1,0 +1,192 @@
+﻿
+
+@Styles.Render("~/cssf")
+@using (Html.BeginForm("AddToCart", "Cart", FormMethod.Post))
+{
+    <div id="productDetailsContainer">
+        @foreach (var a in ViewBag.list)
+        {
+            <div class="row g-4">
+                <!-- Thêm khoảng cách giữa các cột -->
+                <!-- Hình ảnh sản phẩm và giá -->
+                <div class="col-xl-5 col-lg-5 col-md-6 text-center">
+                    <img class="img-fluid rounded" src="~/images/@a[3]" alt="Product Image">
+                    <h1 class="mt-3 text-danger" id="totalPrice" data-base-price="@a[5]">
+                        @if (ViewBag.Total == null || ViewBag.Total == 0)
+                        {
+                            <div>@Convert.ToInt32(a[5]).ToString("#,##0")đ</div>
+                        }
+                        else
+                        {
+                            <div>@Convert.ToInt32(ViewBag.Total).ToString("#,##0")đ</div>
+                        }
+                    </h1>
+                </div>
+
+                <!-- Thông tin chi tiết -->
+                <div class="col-xl-7 col-lg-7 col-md-6">
+                    <input type="hidden" name="idsp" value="@a[0]" />
+                    <input type="hidden" name="quantity" value="1" />
+                    <h2 class="mb-3 font-weight-bold">@a[2]</h2> <!-- Tiêu đề nổi bật -->
+                    <p class="product-desc">@a[4]</p> <!-- Thông tin mô tả -->
+                    @if (ViewBag.IsPizza) // Kiểm tra xem có phải pizza không
+                    {
+                        <!-- Kích thước và loại đế -->
+                        <div class="size-crust-wrapper">
+                            <div class="size-options">
+                                <h4>Kích Thước</h4>
+                                <div class="options-container">
+                                    @for (int i = 0; i < ViewBag.list2.Count; i++)
+                                    {
+                                        var b = ViewBag.list2[i];
+                                        <input type="radio" name="size" id="size-@b[0]" value="@b[0]" data-price="@b[2]" @(i == 0 ? "checked" : "") onchange="filterSize('@b[0]')">
+                                        <label for="size-@b[0]" class="size-label">
+                                            <span>@b[1]"</span> <!-- Tên kích thước -->
+                                            @if (Convert.ToInt32(b[2]) != 0)
+                                            {
+                                                <span class="price">+@Convert.ToInt32(b[2]).ToString("#,##0")đ</span> <!-- Giá tiền -->
+                                            }
+                                            else
+                                            {
+                                                <span class="price">&nbsp;</span> <!-- &nbsp; tạo khoảng trống -->
+                                            }
+                                        </label>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="crust-options">
+                                <h4>Đế</h4>
+                                <div class="options-container">
+                                    @for (int i = 0; i < ViewBag.list3.Count; i++)
+                                    {
+                                        var c = ViewBag.list3[i];
+                                        <label class="crust-label">
+                                            <input type="radio" name="idpizza" id="crust-@c[0]" value="@c[0]" data-price="@c[2]" data-selectedCrust="@c[0]" @(i == 0 ? "checked" : "") onchange="filterCrust()">
+                                            <span>@c[1]</span>
+                                            <span>&nbsp;</span>
+                                            @if (Convert.ToInt32(c[2]) != 0)
+                                            {
+                                                <span class="price">+@Convert.ToInt32(c[2]).ToString("#,##0")đ</span>
+                                            }
+                                        </label>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <input type="hidden" name="idpizza" value="0" />
+                    }
+                    <!-- Ghi chú -->
+                    <div class="mb-4">
+                        <h3>Ghi chú</h3>
+                        <textarea class="form-control" name="note" oninput="this.value = this.value.replace(/[\r\n]+/g, ' ');" id="exampleFormControlTextarea1" placeholder="Thêm ghi chú về món ăn..."></textarea>
+                    </div>
+
+                    <!-- Nút thêm vào giỏ hàng -->
+                    <div class="price-box-bar text-center">
+                        <button class="btn btn-add-cart btn-lg px-5" id="submitCart">Thêm vào giỏ hàng</button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+<script>
+    window.onload = function () {
+        document.querySelectorAll("center a[href='http://somee.com']").forEach(el => el.remove());
+        document.querySelectorAll("script[src*='somee.com/serveimages/ad2/WholeInsert5.js']").forEach(el => el.remove());
+    };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+
+    // Xử lý khi thêm vào giỏ hàng
+    $(document).ready(function () {
+        $("#submitCart").click(function (e) {
+            e.preventDefault();
+
+            let form = $(this).closest("form"); // Tìm form gần nhất
+            let formData = form.serialize(); // Lấy dữ liệu form
+
+            $.ajax({
+                url: form.attr("action"),
+                type: "POST",
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            title: "Đã thêm vào giỏ hàng",
+                            icon: "success",
+                            position: "top-end", // Hiển thị ở góc phải phía trên
+                            toast: true, // Bật chế độ thông báo nhỏ gọn
+                            showConfirmButton: false,
+                            timer: 800,
+                        }).then(() => {
+                            location.reload(); // Load lại trang sau khi hiển thị thông báo
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Lỗi!",
+                            text: "Không thể thêm sản phẩm, vui lòng thử lại!",
+                            icon: "error",
+                            position: "top-end",
+                            toast: true,
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        title: "Lỗi!",
+                        text: "Có lỗi xảy ra, vui lòng thử lại!",
+                        icon: "error",
+                        position: "top-end",
+                        toast: true,
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                }
+            });
+        });
+    });
+ //Xử lý khi chọn size bánh
+function filterSize(selectedSize) {
+    let basePrice = parseInt($('#totalPrice').data('base-price'));
+    let sizePrice = parseInt($('input[name="size"]:checked').data('price')) || 0;
+
+    let totalPrice = basePrice + sizePrice;
+    $.ajax({
+        url: '@Url.Action("GetProductDetails", "Home")',
+        type: 'GET',
+        data: { id: '@ViewBag.list[0][0]', size: selectedSize, total: totalPrice }, // Gửi cả id và size
+        success: function (result) {
+            // Thay thế toàn bộ nội dung của partial view bằng kết quả trả về
+            $('#productDetailsContainer').html(result); // Thay #productDetailsContainer bằng ID của container chứa partial view
+
+            // Khôi phục trạng thái đã chọn cho kích thước bánh sau khi re-render
+            $('input[name="size"][value="' + selectedSize + '"]').prop('checked', true);
+        }
+    });
+}
+
+//Xử lý khi chọn đế bánh
+function filterCrust() {
+    let basePrice = parseInt($('#totalPrice').data('base-price'));
+    let sizePrice = parseInt($('input[name="size"]:checked').data('price')) || 0;
+    let crustPrice = parseInt($('input[name="idpizza"]:checked').data('price')) || 0;
+
+    let totalPrice = basePrice + sizePrice + crustPrice;
+    $.ajax({
+        url: '@Url.Action("GetProductDetails", "Home")',
+        type: 'GET',
+        data: { id: '@ViewBag.list[0][0]', total: totalPrice }, // Gửi cả id và size
+        success: function (result) {
+            $('#totalPrice').text(totalPrice.toLocaleString('vi-VN') + "đ"); // Thay #productDetailsContainer bằng ID của container chứa partial view
+        }
+    });
+}
+</script>

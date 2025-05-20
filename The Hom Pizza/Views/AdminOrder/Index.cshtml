@@ -1,0 +1,263 @@
+﻿@{
+    Layout = "~/Views/Shared/_Admin.cshtml";
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Quản lý theo dõi đơn hàng</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="~/Admin/Dashboard">Home</a></li>
+                        <li class="breadcrumb-item active">Danh sách đơn hàng</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- Main content -->
+    <!-- Main content -->
+    <section class="content">
+        <!-- Default box -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Danh sách đơn hàng</h3>
+                <div class="card-tools d-flex align-items-center flex-wrap">
+                    <!-- Bộ lọc trạng thái -->
+                    <div class="btn-group mb-2">
+                        <button type="button" class="btn btn-outline-primary filter-status" data-status="all">Tất cả</button>
+                        <button type="button" class="btn btn-outline-warning filter-status" data-status="Chưa xác nhận">Chưa xác nhận</button>
+                        <button type="button" class="btn btn-outline-info filter-status" data-status="Đang giao">Đang giao</button>
+                        <button type="button" class="btn btn-outline-success filter-status" data-status="Đã giao">Đã giao</button>
+                        <button type="button" class="btn btn-outline-danger filter-status" data-status="Hủy đơn">Hủy đơn</button>
+                    </div>
+
+                    <!-- Bộ lọc ngày -->
+                    <div class="d-flex align-items-center ml-3">
+                        <label for="startDate" class="mr-2 font-weight-bold">Từ:</label>
+                        <input type="date" id="startDate" class="form-control form-control-sm mr-3">
+
+                        <label for="endDate" class="mr-2 font-weight-bold">Đến:</label>
+                        <input type="date" id="endDate" class="form-control form-control-sm">
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-striped projects">
+                    <thead>
+                        <tr>
+                            <th>Mã đơn</th>
+                            <th>Tên khách hàng</th>
+                            <th>Địa chỉ giao hàng</th>
+                            <th>Ghi chú</th>
+                            <th>Ngày đặt hàng</th>
+                            <th>Tổng tiền</th>
+                            <th>Hình thức thanh toán</th>
+                            <th>Tiến độ đơn hàng</th>
+                            <th style="width: 8%" class="text-center">Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orderTableBody">
+                        @foreach (var a in ViewBag.list)
+                        {
+                            <tr class="order-row" data-status="@a[6]" data-date="@Convert.ToDateTime(a[3]).ToString("yyyy-MM-dd")">
+                                <td>
+                                    <a href="~/Home/ChiTietDonHang?id=@a[0]">
+                                        @a[0]
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="~/AdminUser/Index?id=@a[9]">
+                                        @a[1]
+                                    </a>
+                                </td>
+                                <td>@a[2]</td>
+                                <td>@a[8]</td>
+                                <td>@Convert.ToDateTime(a[3]).ToString("dd/MM/yyyy")</td>
+                                <td>@Convert.ToInt32(a[4]).ToString("#,##0")đ</td>
+                                <td>@a[5]</td>
+                                <td>@a[6]</td>
+                                <td class="project-state">
+                                    @if (Convert.ToBoolean(a[7]))
+                                    {
+                                        <span class="badge badge-success">Đã thanh toán</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-danger">Chưa thanh toán</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <!-- Nút Edit -->
+                                        <button type="button" class="btn btn-info btn-xs d-flex align-items-center"
+                                                id="idEditContentOrder" data-toggle="modal" data-target="#modal-order" data-id="@a[0]">
+                                            <i class="fas fa-pencil-alt"></i>&nbsp;Edit
+                                        </button>
+
+                                        <!-- Nút Delete -->
+                                        @using (Html.BeginForm("RemoveOrder", "AdminOrder", FormMethod.Post, new { id = "deleteForm" }))
+                                        {
+                                            <input type="hidden" name="id" value="@a[0]" />
+                                            <button type="submit" class="btn btn-danger btn-xs d-flex align-items-center delete-order">
+                                                <i class="fas fa-trash"></i>&nbsp;Delete
+                                            </button>
+                                        }
+                                    </div>
+                                </td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </section>
+    <!-- /.content -->
+</div>
+<!--Modal Edit Product-->
+<div class="modal fade" id="modal-order">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Cập nhật đơn hàng</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="editContentOrder">
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    //Xử lý edit order
+    $(document).on('click', '#idEditContentOrder', function () {
+        var orderid = $(this).data('id');
+
+        // Gửi yêu cầu AJAX để lấy dữ liệu sản phẩm
+        $.ajax({
+            url: '/AdminOrder/SelectToUpdateOrder', // Endpoint để lấy dữ liệu sản phẩm
+            type: 'GET',
+            data: { id: orderid },
+            success: function (response) {
+                $('#editContentOrder').html(response);
+            },
+            error: function () {
+                $('#editContentOrder').html('<p>Không thể tải. Vui lòng thử lại.</p>');
+            }
+        });
+    });
+    // Xử lý thông báo xóa đơn hàng
+    $(document).on('click', '.delete-order', function (e) {
+        e.preventDefault();
+
+        // Lấy thông tin form và ID size
+        var form = $(this).closest('form');
+        var formData = form.serialize(); // Lấy toàn bộ dữ liệu form
+        var url = form.attr('action'); // Lấy URL từ action của form
+
+        // Hiển thị cảnh báo xác nhận trước khi thực hiện xóa
+        Swal.fire({
+            title: "Bạn có chắc chắn muốn xóa?",
+            text: "Dữ liệu sẽ không thể khôi phục lại!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Xóa",
+            cancelButtonText: "Hủy"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Gửi yêu cầu AJAX nếu người dùng xác nhận
+                $.ajax({
+                    url: url,
+                    type: form.attr('method'),
+                    data: formData,
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                title: "Thành công!",
+                                text: response.message,
+                                icon: "success",
+                                timer: 1000,
+                                showConfirmButton: false
+                            }).then(() => {
+                                location.reload(); // Tải lại trang
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Lỗi!",
+                                text: response.message,
+                                icon: "error"
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Lỗi AJAX:", status, error, xhr.responseText);
+                        Swal.fire({
+                            title: "Lỗi!",
+                            text: "Đã có lỗi xảy ra. Vui lòng thử lại.",
+                            icon: "error"
+                        });
+                    }
+                });
+            }
+        });
+    });
+    // Xử lý tìm kiếm
+    document.addEventListener("DOMContentLoaded", function () {
+        const statusButtons = document.querySelectorAll(".filter-status");
+        const startDateInput = document.getElementById("startDate");
+        const endDateInput = document.getElementById("endDate");
+        let currentStatus = "all"; // Mặc định hiển thị tất cả
+
+        function filterOrders() {
+            const rows = document.querySelectorAll(".order-row");
+            const startDate = new Date(startDateInput.value);
+            const endDate = new Date(endDateInput.value);
+            endDate.setHours(23, 59, 59, 999); // Để tính hết ngày được chọn
+
+            rows.forEach(row => {
+                const orderDate = new Date(row.getAttribute("data-date"));
+                const orderStatus = row.getAttribute("data-status");
+
+                // Kiểm tra ngày có hợp lệ không
+                const withinDateRange =
+                    (!startDateInput.value || orderDate >= startDate) &&
+                    (!endDateInput.value || orderDate <= endDate);
+
+                // Kiểm tra trạng thái
+                const statusMatch = (currentStatus === "all") || (orderStatus === currentStatus);
+
+                // Hiển thị hoặc ẩn hàng
+                row.style.display = withinDateRange && statusMatch ? "" : "none";
+            });
+        }
+
+        // Gán sự kiện click cho từng nút trạng thái
+        statusButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                currentStatus = this.getAttribute("data-status");
+                filterOrders();
+            });
+        });
+
+        // Gán sự kiện khi chọn ngày
+        startDateInput.addEventListener("change", filterOrders);
+        endDateInput.addEventListener("change", filterOrders);
+    });
+</script>
+

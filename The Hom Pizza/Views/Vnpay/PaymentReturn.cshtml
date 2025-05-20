@@ -1,0 +1,117 @@
+﻿@{
+    ViewBag.Title = "Kết quả thanh toán";
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .success-container {
+            text-align: center;
+            background: white;
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .success-icon {
+            color: #28a745;
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        .success-message {
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .fail-message {
+            font-size: 22px;
+            font-weight: bold;
+            color: #FF0000;
+            margin-bottom: 10px;
+        }
+
+        .order-info {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .order-id {
+            font-weight: bold;
+            color: #17a2b8;
+        }
+
+        .btn-group {
+            margin-top: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-home {
+            background-color: #007bff;
+            color: white;
+            border: none;
+        }
+
+            .btn-home:hover {
+                background-color: #0056b3;
+            }
+
+        .btn-orders {
+            background-color: #28a745;
+            color: white;
+            border: none;
+        }
+
+            .btn-orders:hover {
+                background-color: #218838;
+            }
+    </style>
+</head>
+<body>
+
+    <div class="success-container">
+        @if (ViewBag.Message == "Đặt hàng thành công!")
+        {
+            <i class="fa fa-check-circle success-icon"></i>
+            <p class="success-message">Thanh toán thành công!</p>
+            <p class="order-info">Cảm ơn bạn. Đơn hàng của bạn đang được xử lý.</p>
+            <p class="order-info">Vui lòng kiểm tra đơn hàng trong lịch sử mua hàng của bạn.</p>
+        }
+        else
+        {
+            <i class="fas fa-times-circle fail-icon"></i>
+            <h2 class="success-message"> Thanh toán thất bại!</h2>
+            <p class="order-info">Rất tiếc! Giao dịch không thành công. Vui lòng thử lại hoặc chọn phương thức thanh toán khác.</p>
+        }
+        <div class="mt-3">
+            <p><strong>Mã đơn hàng:</strong> @Request.QueryString["vnp_TxnRef"]</p>
+            <p><strong>Số tiền thanh toán:</strong> @(Convert.ToInt32(Request.QueryString["vnp_Amount"]) / 100)đ</p>
+            <p><strong>Mã giao dịch:</strong> @Request.QueryString["vnp_TransactionNo"]</p>
+        </div>
+
+        <div class="mt-4">
+            <a href="~/Home/Index" class="btn btn-primary"><i class="fas fa-home"></i> Về trang chủ</a>
+        </div>
+    </div>
+</body>
+</html>

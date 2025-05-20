@@ -1,0 +1,238 @@
+﻿@{
+    ViewBag.Title = "Checkout";
+}
+<style>
+    .all-title-box {
+        background: url('https://ext.same-assets.com/4168801420/3835862774.jpeg') no-repeat center center;
+        background-size: cover;
+        padding: 60px 0;
+        color: white;
+        text-align: center;
+    }
+
+    .breadcrumb {
+        background: none;
+        padding: 0;
+        margin-top: 10px;
+        justify-content: center;
+    }
+
+    .cart-box-main {
+        background: white;
+        margin-top: 30px;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .title-left h3 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+    }
+
+    .order-box h4, .order-box h5 {
+        font-size: 1.2rem;
+    }
+
+    .order-box {
+        padding: 20px;
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        background-color: #f1f1f1;
+    }
+
+    .btn-success {
+        padding: 10px 30px;
+        font-size: 1.1rem;
+        border-radius: 8px;
+    }
+
+    textarea.form-control {
+        resize: none;
+    }
+
+    .custom-control-label::before,
+    .custom-control-label::after {
+        top: 0.25rem;
+    }
+</style>
+@using (Html.BeginForm("ThemDonHang", "Payment", FormMethod.Post))
+{
+    <div class="container cart-box-main">
+        <form method="post">
+            <div class="row">
+                <!-- Thông tin người nhận -->
+                <div class="col-lg-6 mb-4">
+                    <div class="title-left">
+                        <h3>Thông tin người nhận đơn hàng</h3>
+                    </div>
+                    @if (ViewBag.UserID != null)
+                    {
+                        foreach (var a in ViewBag.list)
+                        {
+                            <div class="mb-3">
+                                <label for="name">Họ Tên</label>
+                                <input type="text" class="form-control" placeholder="@a[2]" readonly="">
+                            </div>
+                            <div class="mb-3">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" placeholder="@a[3]" readonly="">
+                            </div>
+                            <div class="mb-3">
+                                <label for="phone">Số điện thoại</label>
+                                <input type="text" class="form-control" placeholder="@a[4]" readonly="">
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="mb-3">
+                            <label for="name">Họ tên *</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email">Email *</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone">Số điện thoại *</label>
+                            <input type="text" class="form-control" id="phone" name="phone" required>
+                        </div>
+                    }
+                    <div class="mb-3">
+                        <label for="address">Địa chỉ *</label>
+                        <input type="text" class="form-control" id="address" name="diachi" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="province">Tỉnh/Thành *</label>
+                            <select class="form-control" id="province" name="tp" required>
+                                <option value="">Chọn Tỉnh/Thành...</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="district">Quận/Huyện *</label>
+                            <select class="form-control" id="district" name="quan" required>
+                                <option value="">Chọn Quận/Huyện...</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="ward">Phường/Xã *</label>
+                            <select class="form-control" id="ward" name="phuong" required>
+                                <option value="">Chọn Phường/Xã...</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ghi chú và thanh toán -->
+                <div class="col-lg-6 mb-4">
+                    <div class="mb-4">
+                        <div class="title-left">
+                            <h3>Ghi chú</h3>
+                        </div>
+                        <textarea class="form-control" name="note" rows="4" placeholder="Ghi chú cho đơn hàng"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <div class="title-left">
+                            <h3>Hình thức thanh toán</h3>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="PayType" id="cod" value="Ship COD" checked>
+                            <label class="form-check-label" for="cod">
+                                Thanh toán khi nhận hàng
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="PayType" id="vnpay" value="Chuyển khoản VNPAY">
+                            <label class="form-check-label" for="vnpay">
+                                Chuyển khoản VNPAY
+                            </label>
+                        </div>
+                    </div>
+                    <div class="order-box">
+                        <div class="d-flex justify-content-between">
+                            <h4>Tổng đơn</h4>
+                            <span class="fw-bold">@Convert.ToInt32(ViewBag.TotalAmount).ToString("#,##0")đ</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <h4>Phí giao hàng</h4>
+                            <span class="fw-bold">Free</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between">
+                            <h5>Tổng thanh toán</h5>
+                            <span class="h5 fw-bold">@Convert.ToInt32(ViewBag.TotalAmountAfterDiscount ?? ViewBag.TotalAmount).ToString("#,##0")đ</span>
+                        </div>
+                    </div>
+                    <div class="text-end mt-4">
+                        <button type="submit" class="btn btn-success">Thanh toán</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+}
+    <!-- End Cart -->
+    @*<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+
+        // Xử lý áp Voucher
+        $(document).ready(function () {
+            $('#applyVoucher').click(function (e) {
+                e.preventDefault();
+
+                var voucherCode = $('#voucherCode').val().trim();
+                if (voucherCode === "") {
+                    Swal.fire({
+                        title: "Lỗi!",
+                        text: "Vui lòng nhập mã giảm giá.",
+                        icon: "warning"
+                    });
+                    return;
+                }
+
+                $.ajax({
+                    url: '@Url.Action("ApplyVoucher", "Payment")',
+                    type: 'POST',
+                    data: { voucherCode: voucherCode },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                title: "Thành công!",
+                                text: "Mã giảm giá đã được áp dụng.",
+                                icon: "success",
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+
+                            // Cập nhật giá trị hiển thị
+                            $('#totalDiscount').text("-" + response.totalDiscount + "đ");
+                            $('#totalAmountAfterDiscount').text(response.totalAmountAfterDiscount + "đ");
+
+                            // Hiển thị phần voucher nếu chưa có
+                            $('#voucherSection').show();
+                        } else {
+                            Swal.fire({
+                                title: "Lỗi!",
+                                text: response.message,
+                                icon: "error"
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            title: "Lỗi!",
+                            text: "Có lỗi xảy ra. Vui lòng thử lại.",
+                            icon: "error"
+                        });
+                    }
+                });
+            });
+        });
+        </script>*@
+
+
+
+
+
