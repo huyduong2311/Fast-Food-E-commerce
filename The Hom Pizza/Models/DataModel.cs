@@ -9,8 +9,9 @@ namespace The_Hom_Pizza.Models
 {
     public class DataModel
     {
-        public static string connectionString = "Server=(local);Database=TheHomePizza2;Trusted_Connection=True"
-;
+        //public static string connectionString = "Server=(local);Database=TheHomePizza2;Trusted_Connection=True";
+        public static string connectionString = "Data Source=PizzaSQL2.mssql.somee.com;Initial Catalog=PizzaSQL2;User ID=huynl_SQLLogin_1;Password=Qc_huy231103;TrustServerCertificate=True;";
+
         public string xulydulieu(string text)
         {
             String s = text.Replace(",", "&44;");

@@ -12,7 +12,7 @@
                 <div class="carousel-caption d-none d-md-block text-start">
                     <h2 class="fw-bold display-5">Pizza Tươi Ngon</h2>
                     <p>Thưởng thức hương vị chuẩn Ý với nguyên liệu tự nhiên.</p>
-                    <a href="#" class="btn btn-light fw-semibold px-4 py-2 rounded-pill">Đặt ngay</a>
+                    <a href="~/Home/Shop?id=1" class="btn btn-light fw-semibold px-4 py-2 rounded-pill">Đặt ngay</a>
                 </div>
             </div>
         </div>
@@ -65,7 +65,7 @@
                                 </div>
                                 <div class="product-info">
                                     <h5 class="product-title">
-                                        <a href="~/Home/ProductDetails?id=@a[0]">
+                                        <a href="#">
                                             @(a[2].Length > 30 ? a[2].Substring(0, 30) + "..." : a[2])
                                         </a>
                                     </h5>
@@ -97,74 +97,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    // Slider functionality
-    const slider = document.getElementById('slider');
-    const slides = document.querySelectorAll('.hero-slide');
-    const dots = document.querySelectorAll('.dot');
-    const prevBtn = document.getElementById('prev');
-    const nextBtn = document.getElementById('next');
-
-    let currentIndex = 0;
-    const slideCount = slides.length;
-
-    function updateSlider() {
-        slider.style.transform = `translateX(-${currentIndex * 100}%)`;
-
-        // Update dots
-        dots.forEach((dot, index) => {
-            if (index === currentIndex) {
-                dot.classList.add('active');
-            } else {
-                dot.classList.remove('active');
-            }
-        });
-    }
-
-    function goToSlide(index) {
-        currentIndex = index;
-        updateSlider();
-    }
-
-    function nextSlide() {
-        currentIndex = (currentIndex + 1) % slideCount;
-        updateSlider();
-    }
-
-    function prevSlide() {
-        currentIndex = (currentIndex - 1 + slideCount) % slideCount;
-        updateSlider();
-    }
-
-    // Event listeners
-    nextBtn.addEventListener('click', nextSlide);
-    prevBtn.addEventListener('click', prevSlide);
-
-    dots.forEach((dot, index) => {
-        dot.addEventListener('click', () => goToSlide(index));
-    });
-
-    // Auto slide
-    let slideInterval = setInterval(nextSlide, 5000);
-
-    // Pause on hover
-    slider.addEventListener('mouseenter', () => {
-        clearInterval(slideInterval);
-    });
-
-    slider.addEventListener('mouseleave', () => {
-        slideInterval = setInterval(nextSlide, 5000);
-    });
-
-    // Smooth scroll for navigation
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
-                behavior: 'smooth'
-            });
-        });
-    });
-</script>
