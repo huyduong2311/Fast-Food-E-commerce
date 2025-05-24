@@ -34,6 +34,10 @@ git clone https://github.com/huyduong2311/Fast-Food-Ecommerce.git
 
 - Nhấn F5 hoặc chọn Start để chạy project.
 
+4. Sử dụng tài khoản Admin
+
+- Đăng Nhập: 0562176774 (username), 1234 (password)
+
 ### Định hướng phát triển tương lai
 
 - Tích hợp thanh toán trực tuyến thực tế thay vì tài khoản test (Momo, VNPAY,...).
